@@ -21,7 +21,7 @@ class AllCardNames(Resource):
 class CardName(Resource):
     def get(self, card_name):
         conn = db_connect.connect()
-        query = conn.execute("select * from cards where lower(name) ='?' ", (card_name))
+        query = conn.execute("select * from cards where lower(name) =(?)", (card_name,))
         result = {'data': [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]}
         return jsonify(result)
 
@@ -29,4 +29,4 @@ api.add_resource(AllCardNames, '/allcardnames')
 api.add_resource(CardName, '/cardname/<card_name>')
 
 if __name__ == '__main__':
-     app.run(port='5002')
+     app.run(port='5000')
