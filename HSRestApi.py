@@ -18,15 +18,23 @@ class AllCardNames(Resource):
 
 
 #select specific card and return values /cardname/leeroy%20jenkins
-class CardName(Resource):
+class CardAllDetails(Resource):
     def get(self, card_name):
         conn = db_connect.connect()
         query = conn.execute("select * from cards where lower(name) =(?)", (card_name,))
         result = {'data': [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]}
         return jsonify(result)
 
+class CardBasic(Resource):
+    def get(self, card_name):
+        conn = db_connect.connect()
+        query = conn.execute("select name,type,text,rarity,cost,attack,health,cardClass,flavor from cards where lower(name) =(?)", (card_name,))
+        result = {'data': [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]}
+        return jsonify(result)
+
 api.add_resource(AllCardNames, '/allcardnames')
-api.add_resource(CardName, '/cardname/<card_name>')
+api.add_resource(CardAllDetails, '/cardalldetails/<card_name>')
+api.add_resource(CardBasic, '/cardbasic/<card_name>')
 
 if __name__ == '__main__':
      app.run(port='5000')
